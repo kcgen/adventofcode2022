@@ -1,1 +1,8 @@
-Elf(id=53, total_cals=69289)
+./process.py items.txt 3
+
+Top 3 elves:
+     Elf(id=53, total_cals=69289)
+     Elf(id=227, total_cals=68321)
+     Elf(id=10, total_cals=68005)
+
+Combined: Elf(id=[53, 227, 10], total_cals=205615)

@@ -91,23 +91,45 @@ class Elf:
     def __lt__(self, other):
         return self.total_cals < other.total_cals
 
+    def __add__(self, other):
+        ids = self.id + [other.id] if isinstance(self.id, list) else [self.id, other.id]
+        total_cals = self.total_cals + other.total_cals
+        return Elf(ids, total_cals)
+
+    def __radd__(self, other):
+        return self if other == 0 else self.__add__(other)
+
+
+class TopN:
+    items = list()
+
+    def __init__(self, n_items, init_item):
+        self.items = [init_item for i in range(n_items)]
+
+    def Consider(self, candidate):
+        for i in range(len(self.items)):
+            if self.items[i] < candidate:
+                self.items.insert(i, candidate)
+                self.items.pop()
+                break
+
 
 def get_next_elf(elf) -> Elf:
     return Elf(id=elf.id + 1)
 
 
-def process_list(items) -> Elf:
+def process_list(items, n) -> Elf:
     elf = Elf(id=1)
-    elf_with_most = Elf(id=0)
+    top_n = TopN(n, Elf(id=0))
 
     for item in items:
         if item.strip().isdigit():
             elf.AddCals(int(item))
         else:
-            elf_with_most = max(elf, elf_with_most)
+            top_n.Consider(elf)
             elf = get_next_elf(elf)
 
-    return elf_with_most
+    return top_n
 
 
 def parse_args():
@@ -121,6 +143,13 @@ def parse_args():
         help="A file holding zero or more calorie lists. One calorie per line."
         "A blank lines terminate the given elf's list.",
     )
+    parser.add_argument(
+        "top_n",
+        metavar="N",
+        type=int,
+        choices=range(1, 100),
+        help="Return the combined calories held by the top N elves.",
+    )
     return parser.parse_args()
 
 
@@ -128,8 +157,13 @@ def main():
     args = parse_args()
 
     with args.calories_file.open("r") as items:
-        elf_with_most = process_list(items)
-        print(elf_with_most)
+        top_n = process_list(items, args.top_n)
+
+        print(f"Top {args.top_n} elves:")
+        for elf in top_n.items:
+            print("    ", elf)
+
+        print(f"\nCombined:", sum(top_n.items))
 
     return 0
 
