@@ -6,3 +6,20 @@ Top 3 elves:
      Elf(id=10, total_cals=68005)
 
 Combined: Elf(id=[53, 227, 10], total_cals=205615)
+
+---
+
+g++ -std=c++17 -Wall -Wextra -Wpedantic -Weffc++ process.cpp
+
+./a.out 
+Usage: ./a.out FILE N
+Where:
+  FILE:  Is the file holding the elves' list of calories.
+     N:  Report the calorie sum of the top N elves' holdings.
+
+./a.out items.txt 1
+Combined sum of the top 1 elves' holdings: 69289 calories
+
+./a.out items.txt 3
+Combined sum of the top 3 elves' holdings: 205615 calories
+
